@@ -54,6 +54,7 @@ class Map:
 
         self.build_map()
         self.make_batch()
+        # print(self.read_pix(1, 1))
 
     def read_pix(self, pix_x, pix_y):
         # reads a color value of a pixel at specified location as RGB
@@ -68,10 +69,13 @@ class Map:
             for y in range(self.map.height):
                 hex_color = self.read_pix(x, y)
                 # now find the tile matching this hex color
-                if hex_color == "":
-                    # add tree at x, y
+                if hex_color == "c3c3c3":
+                    # add wall at x, y
                     self.grid[x][y] = 1
                     print("changed")
+                elif hex_color == "b97a56":
+                    # add ground at x, y
+                    self.grid[x][y] = 0
 
     def make_batch(self):
         height = 0
@@ -92,7 +96,7 @@ sprites = GameSprites()
 player = Player()
 logic = Logic()
 map = Map()
-window = pyglet.window.Window(map.map.width, map.map.height)
+window = pyglet.window.Window(map.map.width*10, map.map.height*10)
 
 
 @window.event
@@ -108,7 +112,7 @@ def on_draw():
     # glVertex2f(window.width, 0)
     # glVertex2f(window.width, window.height)
     # glEnd()
-
+    map.map_batch.draw()
     sprites.player.blit(player.PosX, player.PosY)
 
 
