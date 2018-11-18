@@ -4,13 +4,15 @@ from pyglet.window import key
 from pyglet.window import mouse
 
 
+# a collection of all the sprites to be drawn on the screen
 class GameSprites:
     def __init__(self):
         self.player = pyglet.resource.image("sprites/player.png")
-        self.ground = pyglet.resource.image("sprites/terrain/ground.png")
-        self.wall = pyglet.resource.image("sprites/terrain/wall.png")
+        self.ground = pyglet.resource.image("terrain/ground.png")
+        self.wall = pyglet.resource.image("terrain/wall.png")
 
 
+# player class for player data
 class Player:
     def __init__(self):
         # self.image = pyglet.resource.image("sprites/player.png")
@@ -24,6 +26,7 @@ class Player:
         self.PosY = 0  # players y position
 
 
+# bulk of the game logic
 class Logic:
     def check_movement(self, symbol):
         if symbol == key.UP:
@@ -36,6 +39,7 @@ class Logic:
             player.PosX -= 1
 
 
+# the map image reading and building
 class Map:
     def __init__(self):
         self.map = pyglet.image.load("map.png")
@@ -84,10 +88,11 @@ class Map:
             height += 1
 
 
-window = pyglet.window.Window()
 sprites = GameSprites()
 player = Player()
 logic = Logic()
+map = Map()
+window = pyglet.window.Window(map.map.width, map.map.height)
 
 
 @window.event
