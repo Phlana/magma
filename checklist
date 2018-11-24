@@ -1,0 +1,124 @@
+Pokemon mystery dungeon inspired game
+2D tile movement/map
+nothing moves til you move (turn based)
+
+MAP:
+	randomly generated
+	rooms and corridors
+	a room with stairs down
+
+	needs a way of detecting room (groups of empty spaces)
+	corridors can intersect but not rooms
+	rooms of variable length and width
+	only one stair
+
+	rooms randomly have special attributes?
+
+	CURRENTLY STATIC MAP HAND-DRAWN
+
+CHARACTERS:
+	player
+	levels and stats
+	head, body, legs, trinket equipment slots
+	main hand weapon, (tentative) offhand weapon slots
+
+GAMEPLAY:
+	items, equipment, consumables, coins from defeated monsters
+	2 handed weapons (tentative)
+	randomly spawned monsters pathfind to you
+
+    (tentative)
+	every few floors, shop for buying equipment or consumables
+	every couple floors, miniboss or boss with predefined rooms and bosses but random selection
+
+	OR
+
+	random rooms are shops
+	miniboss in specially generated room
+	as you get closer to the room, the walls and floor graphics gradually shift to indicate presence of boss room (tentative)(tentative)
+
+STORY/GOAL:
+	?? (tentative)
+	go deeper
+
+ITEMS: (tentative)
+	HEALTH
+		herb
+		small health potion
+		health potion
+	MANA
+		glowshroom
+		small mana potion
+		mana potion
+	BUFF
+		speed potion
+		strength potion
+		sight potion
+
+EQUIPMENT: (tentative)
+	MELEE
+		dagger
+		sword
+		broadsword
+
+		leather headpiece
+		leather chestpiece
+		leather legpiece
+		iron headpiece
+		iron chestpiece
+		iron legpiece
+		crystal headpiece
+		crystal chestpiece
+		crystal legpiece
+	MAGIC
+		wand
+		tome
+		staff
+
+		silk hat
+		silk robe
+		silk dress
+		shining hat
+		shining robe
+		shining dress
+		luminous hat
+		luminous robe
+		luminous dress
+
+	TRINKET
+		torch - increase vision radius
+		ring of ____(tentative)
+
+MONSTERS: (tentative)
+	bat - 1 turn move 2 tiles attack 1 tile, 1 dmg 1 def
+	zombie - 2 turns move 1 tile attack 1 tile, 2 dmg 1 def
+
+USER INTERFACE:
+	game screen
+			character
+			monsters
+		to the side
+			minimap - minimap can just be our map.png
+			floor number
+			character level
+			health bar
+			mana bar
+			coin count
+
+		press e for inventory
+
+	inventory
+		for items
+		show equipment
+		show some stats (attack power, defence) maybe in a different menu
+
+	pause screen
+		resume
+		options
+		save and quit
+
+	options
+		show grid on ground (toggle)
+		keymapping (config file)
+		volume control
+		text speed
