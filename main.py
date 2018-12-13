@@ -75,9 +75,9 @@ class Field:
     # builds the play field given a png with specific colors
     def build_field(self):
         # reads a color value of a pixel at specified location as RGB
-        def read_pix(obj, pix_x, pix_y):
+        def read_pix(self_, pix_x, pix_y):
             # load specific pixel color
-            pix = obj.sprite_large.get_region(pix_x, pix_y, 1, 1).get_image_data().get_data('RGB', 3)
+            pix = self_.sprite_large.get_region(pix_x, pix_y, 1, 1).get_image_data().get_data('RGB', 3)
             rgb = (pix[0], pix[1], pix[2])
             # returns color in its equivalent hex code
             return '%02x%02x%02x' % rgb
@@ -115,7 +115,7 @@ class Field:
 
 class Window:
     def __init__(self):
-        self.window = pyglet.window.Window(field.sprite_large.width * 10, field.sprite_large.height * 10)
+        self.window = pyglet.window.Window(1280, 720)
         # glScalef(22.0, 22.0, 22.0)
 
         # event decorators
@@ -133,16 +133,21 @@ class Window:
 
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-
-        glClear(GL_COLOR_BUFFER_BIT)
+        # glClearColor(0.0, 0.0, 0.0, 0.0)
+        # glClear(GL_COLOR_BUFFER_BIT)
         glLoadIdentity()
-        # glBegin(GL_TRIANGLES)
-        # glVertex2f(0, 0)
-        # glVertex2f(window.width, 0)
-        # glVertex2f(window.width, window.height)
-        # glEnd()
+
         field.field_batch.draw()
         sprites.player.blit(player.PosX, player.PosY)
+
+        pyglet.graphics.draw(4, GL_POLYGON, ("v2i", (720, 0, 1280, 0, 1280, 720, 720, 720)))
+
+        # glBegin(GL_TRIANGLES)
+        # glVertex2f(0, 0)
+        # glVertex2f(self.window.width, 0)
+        # glVertex2f(self.window.width, self.window.height)
+        # glEnd()
+
 
     # for detecting if a key has been pressed
     def on_key_press(self, symbol, modifiers):
@@ -159,4 +164,5 @@ player = Player()
 field = Field()
 window = Window()
 
-pyglet.app.run()
+if __name__ == "__main__":
+    pyglet.app.run()
