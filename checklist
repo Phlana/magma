@@ -2,6 +2,11 @@ Pokemon mystery dungeon inspired game
 2D tile movement/map
 nothing moves til you move (turn based)
 
+IMMEDIATE:
+    working on menu screens
+    map generation rework
+        map loading into array not good
+
 MAP:
 	randomly generated
 	rooms and corridors
@@ -35,7 +40,7 @@ GAMEPLAY:
 
 	random rooms are shops
 	miniboss in specially generated room
-	as you get closer to the room, the walls and floor graphics gradually shift to indicate presence of boss room (tentative)(tentative)
+	as you get closer to the room, the walls and floor graphics gradually shift to indicate presence of boss room (tentative)(tentative bosses (tentative))
 
 STORY/GOAL:
 	?? (tentative)
@@ -122,3 +127,10 @@ USER INTERFACE:
 		keymapping (config file)
 		volume control
 		text speed
+
+GRAPHICS:
+    torches on walls cast shadows -> some sort of vector processing for angles and how shadows are calculated
+    make some actual art for tiles and character
+        i was thinking of dirty worn down dark brown bricks for walls
+        generally the game will have dark textures and hard to see areas
+        small field of vision centered around player
