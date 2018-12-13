@@ -1,7 +1,10 @@
 import pyglet
 from pyglet.gl import *
-from pyglet.window import key
-from pyglet.window import mouse
+from pyglet.window import key, mouse
+
+
+# Tile size
+TILE_SIZE = 30
 
 
 # a collection of all the sprites to be drawn on the screen
@@ -12,7 +15,7 @@ class GameSprites:
         self.wall = pyglet.resource.image("terrain/wall.png")
 
 
-# player class for player data
+# player class for player data and player movement
 class Player:
     def __init__(self):
         # self.image = pyglet.resource.image("sprites/player.png")
@@ -25,49 +28,63 @@ class Player:
         self.PosX = 0  # players x position
         self.PosY = 0  # players y position
 
+        self.set_position(38, 32)
 
-# bulk of the game logic
-class Logic:
+    # a function to set the players position to a specific spot in pixels
+    def set_position(self, x, y):
+        self.PosX = x
+        self.PosY = y
+
+    # move positive or negative integer spaces in x direction
+    def move_x(self, tiles):
+        self.PosX += tiles * TILE_SIZE
+
+    # move positive or negative integer spaces in y direction
+    def move_y(self, tiles):
+        self.PosY += tiles * TILE_SIZE
+
+    # move player depending on key pressed
     def check_movement(self, symbol):
         if symbol == key.UP:
-            player.PosY += 1
+            self.move_y(1)
         if symbol == key.DOWN:
-            player.PosY -= 1
+            self.move_y(-1)
         if symbol == key.RIGHT:
-            player.PosX += 1
+            self.move_x(1)
         if symbol == key.LEFT:
-            player.PosX -= 1
+            self.move_x(-1)
 
 
 # the map image reading and building
-class Map:
+class Field:
     def __init__(self):
-        self.map = pyglet.image.load("map.png")
+        self.sprite_large = pyglet.image.load("map.png")
         self.grid = []
-        self.map_sprites = []
-        for y in range(self.map.width):
+        self.field_sprites = []
+        for y in range(self.sprite_large.width):
             tmp = []
-            for x in range(self.map.height):
+            for x in range(self.sprite_large.height):
                 tmp.append(0)
             self.grid.append(tmp)
-        self.map_batch = pyglet.graphics.Batch()
+        self.field_batch = pyglet.graphics.Batch()
 
-        self.build_map()
+        self.build_field()
         self.make_batch()
         # print(self.read_pix(1, 1))
 
-    def read_pix(self, pix_x, pix_y):
+    # builds the play field given a png with specific colors
+    def build_field(self):
         # reads a color value of a pixel at specified location as RGB
-        pix = self.map.get_region(pix_x, pix_y, 1, 1).get_image_data().get_data('RGB', 3)
-        rgb = (pix[0], pix[1], pix[2])
-        # returns its equivalent hex code
-        return '%02x%02x%02x' % rgb
+        def read_pix(obj, pix_x, pix_y):
+            # load specific pixel color
+            pix = obj.sprite_large.get_region(pix_x, pix_y, 1, 1).get_image_data().get_data('RGB', 3)
+            rgb = (pix[0], pix[1], pix[2])
+            # returns color in its equivalent hex code
+            return '%02x%02x%02x' % rgb
 
-    def build_map(self):
-        # building world
-        for x in range(self.map.width):
-            for y in range(self.map.height):
-                hex_color = self.read_pix(x, y)
+        for x in range(self.sprite_large.width):
+            for y in range(self.sprite_large.height):
+                hex_color = read_pix(self, x, y)
                 # now find the tile matching this hex color
                 if hex_color == "c3c3c3":
                     # add wall at x, y
@@ -83,43 +100,63 @@ class Map:
             width = 0
             for val in row:
                 if val == 0:
-                    self.map_sprites.append(pyglet.sprite.Sprite(sprites.ground, x=width*20, y=height*20, batch=self.map_batch))
+                    self.field_sprites.append(pyglet.sprite.Sprite(sprites.ground,
+                                                                   x=width * TILE_SIZE, y=height * TILE_SIZE,
+                                                                   batch=self.field_batch))
                     print("ground")
                 elif val == 1:
-                    self.map_sprites.append(pyglet.sprite.Sprite(sprites.wall, x=width*20, y=height*20, batch=self.map_batch))
+                    self.field_sprites.append(pyglet.sprite.Sprite(sprites.wall,
+                                                                   x=width * TILE_SIZE, y=height * TILE_SIZE,
+                                                                   batch=self.field_batch))
                     print("wall")
                 width += 1
             height += 1
 
 
+class Window:
+    def __init__(self):
+        self.window = pyglet.window.Window(field.sprite_large.width * 10, field.sprite_large.height * 10)
+        # glScalef(22.0, 22.0, 22.0)
+
+        # event decorators
+        self.on_draw = self.window.event(self.on_draw)
+        self.on_key_press = self.window.event(self.on_key_press)
+        self.on_mouse_click = self.window.event(self.on_mouse_click)
+
+    # for drawing each frame of the window
+    def on_draw(self):
+        self.window.clear()
+
+        # # The following two lines will change how textures are scaled.
+        # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+        glClear(GL_COLOR_BUFFER_BIT)
+        glLoadIdentity()
+        # glBegin(GL_TRIANGLES)
+        # glVertex2f(0, 0)
+        # glVertex2f(window.width, 0)
+        # glVertex2f(window.width, window.height)
+        # glEnd()
+        field.field_batch.draw()
+        sprites.player.blit(player.PosX, player.PosY)
+
+    # for detecting if a key has been pressed
+    def on_key_press(self, symbol, modifiers):
+        print("key pressed")
+        player.check_movement(symbol)
+
+    # for detecting if the mouse has been clicked
+    def on_mouse_click(self, button, modifiers):
+        pass
+
+
 sprites = GameSprites()
 player = Player()
-logic = Logic()
-map = Map()
-window = pyglet.window.Window(map.map.width*10, map.map.height*10)
-
-
-@window.event
-def on_draw():
-    window.clear()
-    glEnable(GL_BLEND)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-
-    glClear(GL_COLOR_BUFFER_BIT)
-    glLoadIdentity()
-    # glBegin(GL_TRIANGLES)
-    # glVertex2f(0, 0)
-    # glVertex2f(window.width, 0)
-    # glVertex2f(window.width, window.height)
-    # glEnd()
-    map.map_batch.draw()
-    sprites.player.blit(player.PosX, player.PosY)
-
-
-@window.event
-def on_key_press(symbol, modifiers):
-    print("key pressed")
-    logic.check_movement(symbol)
-
+field = Field()
+window = Window()
 
 pyglet.app.run()
