@@ -7,6 +7,8 @@ IMMEDIATE:
     map generation rework
         map loading into array not good
 
+
+
 MAP:
 	randomly generated
 	rooms and corridors
